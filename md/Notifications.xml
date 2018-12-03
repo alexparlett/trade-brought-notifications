@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diff>
+  <replace sel="//mdscript/cues/cue[1]/cues/cue[33]/cues/cue[1]/actions/do_else[1]">
+    <do_else>
+      <set_value name="$amount" exact="$trade.transferredamount"/>
+      <set_value name="$ware" exact="$trade.ware"/>
+      <set_value name="$price" exact="$trade.unitprice * $amount"/>
+      <do_if value="$trade.seller.owner == faction.player">
+        <debug_text text="'Sold'" />
+        <set_value name="$otherfaction" exact="$trade.buyer.owner"/>
+        <set_value name="$playerobject" exact="$trade.seller"/>
+        <set_value name="$otherobject" exact="$trade.buyer"/>
+        <set_value name="$text" exact="{1016, 90}.[$playerobject.name, $playerobject.idcode, $amount, $ware, $otherobject.name, $otherobject.idcode, @$otherobject.sector.name, $price/100]" comment="%1 %2 sold %3 %4 to %5 %6 in %7 for %8 Cr."/>
+
+        <set_value name="$tradecontainer" exact="if $trade.seller.commander then $trade.seller.commander else $trade.seller"/>
+        <do_if value="$tradecontainer.isoperational">
+          <set_value name="$tradenpc" exact="$tradecontainer.tradenpc"/>
+          <!-- if npc money is 50% higher than max budget -->
+          <do_if value="$tradecontainer.hasownaccount and $tradecontainer.maxbudget != 0 and (2 * $tradecontainer.money &gt; 3 * $tradecontainer.maxbudget)">
+            <set_value name="$FireInteractiveEvent" exact="true"/>
+          </do_if>
+        </do_if>
+      </do_if>
+      <do_else>
+        <debug_text text="'Brought'" />
+        <set_value name="$otherfaction" exact="$trade.seller.owner"/>
+        <set_value name="$playerobject" exact="$trade.buyer"/>
+        <set_value name="$otherobject" exact="$trade.seller"/>
+        <set_value name="$text" exact="{1016, 91}.[$playerobject.name, $playerobject.idcode, $amount, $ware, $otherobject.name, $otherobject.idcode, @$otherobject.sector.name, $price/100]" comment="%1 %2 bought %3 %4 from %5 %6 in %7 for %8 Cr."/>
+        <set_value name="$price" exact="-$price"/>
+      </do_else>
+
+      <do_if value="not $playerobject.commander or $playerobject.commander == player.occupiedship">
+        <write_to_logbook title="{20217, 1200}" text="$text" money="$price" faction="$otherfaction" category="general"/>
+      </do_if>
+    </do_else>
+  </replace>
+</diff>

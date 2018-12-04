@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <diff>
-  <replace sel="//mdscript/cues/cue[1]/cues/cue[33]/cues/cue[1]/actions/do_else[1]">
+  <replace sel="//cues/cue[@name='Init']/cues/cue[@name='PlayerFactionTradeCompleted']/cues/cue[@name='PlayerFactionTradeCompleted_Actions']/actions/do_else[1]">
     <do_else>
       <set_value name="$amount" exact="$trade.transferredamount"/>
       <set_value name="$ware" exact="$trade.ware"/>
